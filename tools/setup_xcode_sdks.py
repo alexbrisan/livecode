@@ -1,10 +1,15 @@
 #!/bin/python
 
 # Update these lists if you need different SDK versions!
+'''
+iphoneos_versions = ["10.3", "9.2"]
+iphonesimulator_versions = ["10.3", "9.2", "8.2"]
+macosx_versions = ["10.9"]
+'''
 
-iphoneos_versions = ["10.3", "10.2", "9.2"]
-iphonesimulator_versions = ["10.3", "10.2", "9.2", "8.2"]
-macosx_versions = ["10.9", "10.6"]
+iphoneos_versions = []
+iphonesimulator_versions = []
+macosx_versions = []
 
 # This tool creates the symlinks required for Xcode builds of LiveCode.
 #
@@ -43,6 +48,19 @@ import subprocess
 import sys
 from distutils.version import LooseVersion
 
+def parse_versions_file(file):
+    with open(file) as f:
+        content =  f.read()
+        for name in (content.split("iphone")[1].split("\n")[1:][:-1]):
+            iphoneos_versions.append(name)
+        for name in content.split("iphone")[2].split("\n")[1:][:-1]:
+            if re.match("mac*",name):
+                break
+            iphonesimulator_versions.append(name)
+        for name in content.split("mac")[1].split("\n")[1:][:-1]:
+            macosx_versions.append(name)
+
+
 def min_sdk(versions):
     if len(versions) == 0:
         return None
@@ -58,6 +76,7 @@ def plist_path(xcode_app, platform):
 
 def check_sdk_path(xcode_app, platform, version):
     path = sdk_path(xcode_app, platform, version)
+    #print path
     if os.path.exists(path) and os.path.isdir(path):
         return path
     else:
@@ -67,9 +86,20 @@ def is_sdk_present(xcode_app, platform, version):
     return check_sdk_path(xcode_app, platform, version) is not None
 
 def xcode_paths(base_dir):
-    return [entry
-            for entry in os.listdir(base_dir)
-            if re.match(r"^Xcode_.*\.app$", entry) is not None]
+    return_list = []
+    level_0 = os.listdir(base_dir)
+    for entry in level_0:
+        if(re.match(r"Xcode*\.app", entry)):
+            return_list.append(entry)
+        if(not os.path.isdir(entry)):
+            continue
+        level_1 = os.listdir(entry)
+        for l1_entry in level_1:
+            if(re.match(r"Xcode*\.app", l1_entry)):
+    #            print "Path {} has Xcode app {}".format(entry, l1_entry)
+                return_list.append(entry + "/" + l1_entry)
+    # print return_list
+    return return_list
 
 def target_xcode(base_dir):
     return "{}/{}".format(base_dir, "Xcode.app")
@@ -91,6 +121,7 @@ class SDKInstaller(object):
 
     def install(self, platform, versions):
         target = target_xcode(self._base_dir)
+        print target
         self._install_sdks(target, platform, versions)
         self._set_sdk_minversion(target, platform, versions)
 
@@ -115,6 +146,7 @@ class SDKInstaller(object):
 
     def _install_sdk(self, xcode_app, platform, version):
         desc = "{} {}".format(platform, version)
+
         if is_sdk_present(xcode_app, platform, version):
             self._status(True, desc)
             return
@@ -187,6 +219,7 @@ class CachingSDKInstaller(SDKInstaller):
         super(CachingSDKInstaller, self)._install_sdk(xcode_app, platform, version)
 
 if __name__ == "__main__":
+    parse_versions_file("required_versions")
     if "--cache" in sys.argv:
         installer = CachingSDKInstaller(".", "./XcodeSDKs")
     else:
