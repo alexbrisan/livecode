@@ -1131,6 +1131,18 @@ bool MCButton::tabselectonmouseup()
 
 Boolean MCButton::mdown(uint2 which)
 {
+    if (!strcmp(getstack().Get()->getname_cstring(),"Untitled 2"))
+    {
+        fprintf(stderr, "\n ======= MDOWN =========");
+        MCRectangle t_button_rect = getrect();
+        fprintf(stderr, "\nButton_rect is %d %d %d %d", t_button_rect.x, t_button_rect.y,
+                t_button_rect.width, t_button_rect.height);
+        fprintf(stderr, "\nMouse position is %d %d\n", MCmousex, MCmousey);
+        fprintf(stderr, "Mouse stack pointer is %s\n", MCmousestackptr.Get()->getname_cstring());
+        fprintf(stderr, "Click stack pointer is %s\n", MCclickstackptr.Get()->getname_cstring());
+        fprintf(stderr, "====== END MDOWN ======");
+    }
+    
 	if (state & CS_MENU_ATTACHED)
 		return MCObject::mdown(which);
 	if (state & CS_MFOCUSED)
@@ -1171,7 +1183,7 @@ Boolean MCButton::mdown(uint2 which)
 		else
 		{
 			menu->kunfocus();
-			return mfocus(mx, my);
+            return mfocus(mx,my);
 		}
 	}
 	if ((!MCNameIsEmpty(menuname) || menu.IsValid() || getstyleint(flags) == F_MENU)
@@ -1286,6 +1298,17 @@ Boolean MCButton::mdown(uint2 which)
 
 Boolean MCButton::mup(uint2 which, bool p_release)
 {
+    if (!strcmp(getstack().Get()->getname_cstring(),"Untitled 2"))
+    {
+        fprintf(stderr, "\n==== MUP     ======");
+        MCRectangle t_button_rect = getrect();
+        fprintf(stderr, "\nButton_rect is %d %d %d %d", t_button_rect.x, t_button_rect.y,
+                t_button_rect.width, t_button_rect.height);
+        fprintf(stderr, "\nMouse position is %d %d\n", MCmousex, MCmousey);
+        fprintf(stderr, "Mouse stack pointer is %s\n", MCmousestackptr.Get()->getname_cstring());
+        fprintf(stderr, "Click stack pointer is %s\n", MCclickstackptr.Get()->getname_cstring());
+        fprintf(stderr, "====== END MUP ======\n");
+    }
 	if (state & CS_MENU_ATTACHED)
 		return MCObject::mup(which, p_release);
 	MCAutoStringRef t_pick;

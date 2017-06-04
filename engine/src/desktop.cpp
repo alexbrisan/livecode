@@ -285,10 +285,19 @@ void MCPlatformHandleMouseEnter(MCPlatformWindowRef p_window)
 	if (t_stack == nil)
 		return;
 	
+    if (MCmousestackptr)
+    {
+        fprintf(stderr, "BLAME HANDLE MOUSE ENTER \n %s \n", MCmousestackptr->getname_cstring());
+    }
+    
 	if (!MCmousestackptr.IsBoundTo(t_stack))
 	{
 		MCmousestackptr = t_stack;
-		MCmousestackptr -> enter();
+        if (MCmousestackptr)
+        {
+            fprintf(stderr, "BLAME HANDLE MOUSE ENTER IF \n %s \n", MCmousestackptr->getname_cstring());
+        }
+        MCmousestackptr -> enter();
 	}
 	
 	// MW-2014-06-23: [[ Bug 12670 ]] This shouldn't be necessary as mouseEnter
@@ -379,6 +388,12 @@ void MCPlatformHandleMouseDown(MCPlatformWindowRef p_window, uint32_t p_button, 
 		
 		tripleclick = p_count == 2;
 		
+        if (!strcmp(t_stack -> getname_cstring(),"Untitled 1"))
+        {
+            fprintf(stderr, "\nBLAME HANDLER MDOWN\n%s\n",MCmousestackptr->getname_cstring());
+        }
+        
+        
         //MCLog("MouseDown(%p, %d, %d)", t_target, p_button, p_count);
 		
 		if (p_count != 1)
@@ -430,7 +445,12 @@ void MCPlatformHandleMouseUp(MCPlatformWindowRef p_window, uint32_t p_button, ui
 		t_target = t_menu != nil ? t_menu : MCclickstackptr;
 		
         //MCLog("MouseUp(%p, %d, %d)", t_target, p_button, p_count);
-		
+        
+        if (!strcmp(t_stack -> getname_cstring(),"Untitled 1"))
+        {
+            fprintf(stderr, "\nBLAME HANDLER MUP\n%s\n",MCmousestackptr->getname_cstring());
+        }
+        
 		if (p_count != 1)
 			t_target -> mup(p_button + 1, false);
 		else

@@ -1147,9 +1147,13 @@ void MCStack::mdrag(void)
 
 Boolean MCStack::mdown(uint2 which)
 {
+    if (!strcmp(getname_cstring(), "Untitled 2"))
+    {
+        fprintf(stderr, "BLAME STACK\nMCmousestack : %s\n",MCmousestackptr.Get()->getname_cstring());
+    }
 	if (!opened || state & CS_IGNORE_CLOSE)
 		return False;
-	return curcard->mdown(which);
+    return curcard->mdown(which);
 }
 
 Boolean MCStack::mup(uint2 which, bool p_release)

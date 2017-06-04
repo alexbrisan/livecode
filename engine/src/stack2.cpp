@@ -2213,7 +2213,11 @@ Exec_stat MCStack::openrect(const MCRectangle &rel, Window_mode wm, MCStack *par
                 // IM-2013-10-09: [[ FullscreenMode ]] Reimplement using MCStack::stacktogloballoc
                 MCPoint t_globalloc;
                 t_globalloc = MCmousestackptr->stacktogloballoc(MCPointMake(MCmousex, MCmousey));
-
+                
+                fprintf(stderr, "\nopen, stack name : %s\n",getname_cstring());
+                fprintf(stderr, "\nmouse stack name : %s\n",
+                        getname_cstring());
+                
                 trect.x = t_globalloc.x;
                 trect.y = t_globalloc.y;
             }

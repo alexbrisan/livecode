@@ -736,6 +736,10 @@ void MCCard::munfocus()
 
 Boolean MCCard::mdown(uint2 which)
 {
+    if (!strcmp(getstack().Get()->getname_cstring(), "Untitled 2"))
+    {
+        fprintf(stderr, "BLAME Card\nMCmousestack : %s\n",MCmousestackptr.Get()->getname_cstring());
+    }
 	if (state & CS_MENU_ATTACHED)
 		return MCObject::mdown(which);
 	MCtooltip->closetip();
